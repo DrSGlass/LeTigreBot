@@ -1,0 +1,15 @@
+{
+  "name": "le-tigre-bleu-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nitrousoxide#3667, Thundy#2018",
+  "license": "AGPL-3.0",
+  "devDependencies": {
+    "discord.js": "^11.4.2",
+    "discord.js-commando": "^0.10.0"
+  }
+}
