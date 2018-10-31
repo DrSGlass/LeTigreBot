@@ -30,6 +30,6 @@ bot.on('message',(message) => {
     const command = args.shift().toLowerCase();
 
     if (command == Config.prefix + "ping") {
-        message.reply("Pong!")
+        message.reply(`Pong! ${bot.ping}ms`)
     }
 })
