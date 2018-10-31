@@ -23,6 +23,11 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     }
 })
 
+bot.on('guildMemberAdd', async member => {
+    var dmChannel = await member.createDM()
+    dmChannel.send(`Welcome to Le Tigre Bleu Theatre discord's server, **${member.user.username}**!  Please take your time to verify by heading to <https://verify.eryn.io/>, if you have not already.  After you verify, your roles will be synced with the server and you can begin chatting.\n\nThanks!\n-Le Tigre Executives`)
+})
+
 bot.on('message',(message) => {
     if (message.author.bot) return
 
