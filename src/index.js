@@ -9,6 +9,7 @@ bot.login(Token);
 
 bot.on("ready", () => {
     console.log(bot.user.tag + " logged on successfully.")
+    console.log('nitrousoxide sucks')
 });
 
 bot.on("voiceStateUpdate", (oldMem, newMem) => {
