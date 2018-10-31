@@ -22,3 +22,14 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
         newMem.removeRole(Config.inVCRole, "User left a voice channel.")
     }
 })
+
+bot.on('message',(message) => {
+    if (message.author.bot) return
+
+    var args = message.content.trim().split(" ");
+    const command = args.shift().toLowerCase();
+
+    if (command == Config.prefix + "ping") {
+        message.reply("Pong!")
+    }
+})
