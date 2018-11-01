@@ -1,9 +1,13 @@
 console.clear();
 
 const Discord = require("discord.js");
+const TrelloModule = require('trello')
 const Config = require("./config/mainConfig.json");
-const Token = require("./config/token.json").token;
+const sConfig = require("./config/sConfig.json");
+const fs = require("fs");
+const Token = sConfig.token;
 
+const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
 const bot = new Discord.Client();
 bot.login(Token);
 
@@ -38,29 +42,6 @@ bot.on('message',(message) => {
         message.reply(`Pong! ${bot.ping}ms`)
     }
     if (command === ">eval") {
-        if (message.author.id !== '189495219383697409') {
-            message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
-        }
-        else {
-            message.channel.send("Executing...").then(msg => {
-                message.channel.startTyping()
-                try {
-                    eval(args.join(" "))
-                    message.channel.stopTyping(true)
-                }
-                catch (err) {
-                    message.channel.send("An error occurred!")
-                    message.author.createDM().then(dmChannel => {
-                        dmChannel.send(err)
-                    })
-                    message.channel.stopTyping(true)
-                    console.error(err)
-                }
-                msg.edit("Code executed.");
-            })
-        }
-    }
-    if (command === ">deval") {
         if (message.author.id !== '189495219383697409') {
             message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
         }
