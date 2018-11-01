@@ -37,30 +37,8 @@ bot.on('message',(message) => {
     if (command == Config.prefix + "ping") {
         message.reply(`Pong! ${bot.ping}ms`)
     }
+
     if (command === ">eval") {
-        if (message.author.id !== '189495219383697409') {
-            message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
-        }
-        else {
-            message.channel.send("Executing...").then(msg => {
-                message.channel.startTyping()
-                try {
-                    eval(args.join(" "))
-                    message.channel.stopTyping(true)
-                }
-                catch (err) {
-                    message.channel.send("An error occurred!")
-                    message.author.createDM().then(dmChannel => {
-                        dmChannel.send(err)
-                    })
-                    message.channel.stopTyping(true)
-                    console.error(err)
-                }
-                msg.edit("Code executed.");
-            })
-        }
-    }
-    if (command === ">deval") {
         if (message.author.id !== '189495219383697409') {
             message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
         }
