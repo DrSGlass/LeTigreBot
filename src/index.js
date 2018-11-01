@@ -15,7 +15,7 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     let newChan = newMem.voiceChannel
     let oldChan = oldMem.voiceChannel
 
-    if (!newMem.manageable) { console.log("Higher role"); return 0; }
+    /*if (!newMem.manageable) { console.log("Higher role"); return 0; }*/
     if (oldChan === undefined && newChan !== undefined) { 
         newMem.addRole(Config.inVCRole, "User joined a voice channel.")
     } else if(newChan === undefined) {
