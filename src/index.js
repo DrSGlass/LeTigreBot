@@ -1,9 +1,13 @@
 console.clear();
 
 const Discord = require("discord.js");
+const TrelloModule = require('trello')
 const Config = require("./config/mainConfig.json");
-const Token = require("./config/token.json").token;
+const sConfig = require("./config/sConfig.json");
+const fs = require("fs");
+const Token = sConfig.token;
 
+const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
 const bot = new Discord.Client();
 bot.login(Token);
 
