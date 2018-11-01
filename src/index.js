@@ -19,7 +19,7 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     let newChan = newMem.voiceChannel
     let oldChan = oldMem.voiceChannel
 
-    if (!newMem.manageable) { console.log("Higher role"); return 0; }
+    /*if (!newMem.manageable) { console.log("Higher role"); return 0; }*/
     if (oldChan === undefined && newChan !== undefined) { 
         newMem.addRole(Config.inVCRole, "User joined a voice channel.")
     } else if(newChan === undefined) {
@@ -41,6 +41,7 @@ bot.on('message',(message) => {
     if (command == Config.prefix + "ping") {
         message.reply(`Pong! ${bot.ping}ms`)
     }
+
     if (command === ">eval") {
         if (message.author.id !== '189495219383697409') {
             message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
