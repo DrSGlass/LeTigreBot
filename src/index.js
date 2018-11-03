@@ -43,7 +43,7 @@ bot.on('message',(message) => {
     }
 
     if (command === ">eval") {
-        if (message.author.id !== '189495219383697409') {
+        if (message.author.id !== '189495219383697409' || message.author.id !== '282639975013679114') {
             message.channel.send("<@" + message.author.id + "> You are not authorized to use that command.").then(newMessage => {newMessage.delete(5000); message.delete(5000);})
         }
         else {
