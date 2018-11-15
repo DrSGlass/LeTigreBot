@@ -63,4 +63,25 @@ bot.on('message',(message) => {
             })
         }
     }
+
+    if (command === Config.prefix + "events") {
+        console.log("Hello!")
+        var p = Trello.getCardsForList('5bda01c787016f895ed6b10f')
+        
+        p.then((info) => {
+            var msg = "Planned Events:\n"
+            var ii = 1
+            for (var i in info) {
+                var data = info[i]
+                if (data && data.labels.find(element => element.name == "Pending") && data.labels.find(element => element.name == "Approved")) {
+                    console.log(data.name)
+                    msg = msg + `${ii}. **${data.name}**\n`
+                    ii++
+                }
+            }
+            if (msg == "Planned Events:\n") msg = "No planned events."
+            message.channel.send(msg)
+        })
+
+    }
 })
