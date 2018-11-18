@@ -5,6 +5,7 @@ const TrelloModule = require('trello')
 const Config = require("./config/Config.json");
 const sConfig = require("./config/sConfig.json");
 const fs = require("fs");
+const dateFormat = require('dateformat');
 const Token = sConfig.token;
 
 const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
@@ -31,6 +32,11 @@ bot.on('guildMemberAdd', async member => {
     var dmChannel = await member.createDM()
     dmChannel.send(`Welcome to Le Tigre Bleu Theatre discord's server, **${member.user.username}**!  Please take your time to verify by heading to <https://verify.eryn.io/>, if you have not already.  After you verify, your roles will be synced with the server and you can begin chatting.\n\nThanks!\n-Le Tigre Executives`)
 })
+
+function getCurrentTime() {
+	var currentTime = new Date()
+    return dateFormat(currentTime,"isoDateTime")
+}
 
 bot.on('message',(message) => {
     if (message.author.bot) return
