@@ -5,6 +5,7 @@ const TrelloModule = require('trello')
 const Config = require("./config/Config.json");
 const sConfig = require("./config/sConfig.json");
 const fs = require("fs");
+const dateFormat = require('dateformat');
 const Token = sConfig.token;
 
 const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
@@ -31,6 +32,11 @@ bot.on('guildMemberAdd', async member => {
     var dmChannel = await member.createDM()
     dmChannel.send(`Welcome to Le Tigre Bleu Theatre discord's server, **${member.user.username}**!  Please take your time to verify by heading to <https://verify.eryn.io/>, if you have not already.  After you verify, your roles will be synced with the server and you can begin chatting.\n\nThanks!\n-Le Tigre Executives`)
 })
+
+function getCurrentTime() {
+	var currentTime = new Date()
+    return dateFormat(currentTime,"isoDateTime")
+}
 
 bot.on('message',(message) => {
     if (message.author.bot) return
@@ -62,5 +68,26 @@ bot.on('message',(message) => {
                 message.delete()
             })
         }
+    }
+
+    if (command === Config.prefix + "events") {
+        console.log("Hello!")
+        var p = Trello.getCardsForList('5bda01c787016f895ed6b10f')
+        
+        p.then((info) => {
+            var msg = "Planned Events:\n"
+            var ii = 1
+            for (var i in info) {
+                var data = info[i]
+                if (data && data.labels.find(element => element.name == "Pending") && data.labels.find(element => element.name == "Approved")) {
+                    console.log(data.name)
+                    msg = msg + `${ii}. **${data.name}**\n`
+                    ii++
+                }
+            }
+            if (msg == "Planned Events:\n") msg = "No planned events."
+            message.channel.send(msg)
+        })
+
     }
 })
