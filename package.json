@@ -9,12 +9,13 @@
   "author": "Nitrousoxide#3667, Thundy#2018",
   "license": "AGPL-3.0",
   "devDependencies": {
+    "nodemon": "^1.18.7"
+  },
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0",
     "dateformat": "^3.0.3",
     "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
     "trello": "^0.9.0"
-  },
-  "dependencies": {
-    "xmlhttprequest": "^1.8.0"
   }
 }
