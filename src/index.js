@@ -17,6 +17,7 @@ bot.on("ready", () => {
 });
 
 bot.on("voiceStateUpdate", (oldMem, newMem) => {
+    if (newMem.user.bot) return 
     let newChan = newMem.voiceChannel
     let oldChan = oldMem.voiceChannel
 
@@ -42,7 +43,13 @@ bot.on('message',(message) => {
     if (message.author.bot) return
 
     var args = message.content.trim().split(" ");
-    const command = args.shift().toLowerCase();
+    var command = args.shift().toLowerCase();
+
+    if (command == Config.prefix + "cookingwithchris") {
+        while (true) {
+            message.channel.send("<@212433496046698496> when is Cooking with Chris 3 coming out")
+        }
+    }
 
     if (command == Config.prefix + "ping") {
         message.reply(`Pong! ${bot.ping}ms`)
@@ -71,7 +78,7 @@ bot.on('message',(message) => {
     }
 
     if (command === Config.prefix + "events") {
-        console.log("Hello!")
+        //console.log("Hello!")
         var p = Trello.getCardsForList('5bda01c787016f895ed6b10f')
         
         p.then((info) => {
@@ -89,5 +96,10 @@ bot.on('message',(message) => {
             message.channel.send(msg)
         })
 
+    }
+
+    if (command === Config.prefix + "gp") {
+        let args = command.split(" ").shift
+        
     }
 })
