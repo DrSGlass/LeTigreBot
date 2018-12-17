@@ -96,7 +96,7 @@ bot.on('message',async (message) => {
     }
 
     if (command === Config.prefix + "rank") {
-        if (speakerRank < 248) {message.channel.send("You do not have permission to rank users.").then(m => {m.delete(5000); message.delete(5000)}); return}
+        if (speakerRank < 245) {message.channel.send("You do not have permission to rank users.").then(m => {m.delete(5000); message.delete(5000)}); return}
         if (message.channel.id != '524308609329397801') {message.channel.send("Please use the rank command in <#524308609329397801>.").then(m => {m.delete(5000); message.delete(5000)}); return}
     	var username = args.shift()
     	if (username){
@@ -107,8 +107,8 @@ bot.on('message',async (message) => {
 			.then(function(id){
 				roblox.getRankInGroup(Config.groupId, id)
 				.then(function(rank){
-					if(Config.maximumRank <= rank){
-						m.edit(`${id} is rank ${rank} and cannot be ranked.`)
+					if(speakerRank <= parseInt(args[0])){
+						m.edit(`You can not rank ${username} to that.`)
 					} else {
 						m.edit(`${id} is rank ${rank} and can be ranked.`)
 						roblox.setRank(Config.groupId, id,parseInt(args.shift()))
@@ -117,7 +117,7 @@ bot.on('message',async (message) => {
                             var reason = args.join(" ")
                             if (reason == "" || reason == " ") reason = "No reason provided"
                             bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
-                            .setTitle("Log")
+                            .setAuthor("Rank Log",message.author.displayAvatarURL)
                             .setDescription("User rank changed")
                             .addField("User",username,true)
                             .addField("New Rank",newRole.Name,true)
@@ -140,5 +140,29 @@ bot.on('message',async (message) => {
     		message.channel.send("Please enter a username.")
     	}
     	return;
+    }
+
+    if (command === Config.prefix + "shout") {
+        if (speakerRank < 245) {message.channel.send("You do not have permission to shout.").then(m => {m.delete(5000); message.delete(5000)}); return}
+        if (message.channel.id != '524308609329397801') {message.channel.send("Please use the shout command in <#524308609329397801>.").then(m => {m.delete(5000); message.delete(5000)}); return}
+        if (!args) {
+            message.reply('Please specify a message to shout.')
+            return
+        }
+        args.shift()
+        const shoutMSG = args.join(" ");
+
+        roblox.shout(Config.groupId, shoutMSG)
+            .then(function() {
+                console.log(`Shouted ${shoutMSG}`);
+                message.channel.send('Shouted to the group!').then(m => {m.delete(5000); message.delete(5000)})
+                bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
+                    .setAuthor("Shout Log",message.author.displayAvatarURL)
+                    .setDescription(message.member.displayName)
+                    .addField("Message",shoutMSG,true))
+            })
+            .catch(function(error) {
+                console.log(`Shout error: ${error}`)
+            });
     }
 })
