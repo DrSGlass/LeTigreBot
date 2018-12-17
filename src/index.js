@@ -134,7 +134,7 @@ bot.on('message',async (message) => {
 				});
 			}).catch(function(err){ 
                 console.log(err)
-				m.edit(`But ${username} is not a valid account name.`)
+				m.edit(`${username} is not a valid account name.`)
 			});
     	} else {
     		message.channel.send("Please enter a username.")
