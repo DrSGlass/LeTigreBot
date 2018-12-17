@@ -134,7 +134,7 @@ bot.on('message',async (message) => {
 				});
 			}).catch(function(err){ 
                 console.log(err)
-				m.edit(`Sorry, but ${username} doesn't exist on ROBLOX.`)
+				m.edit(`But ${username} is not a valid account name.`)
 			});
     	} else {
     		message.channel.send("Please enter a username.")
