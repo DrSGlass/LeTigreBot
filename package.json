@@ -15,7 +15,8 @@
     "dateformat": "^3.0.3",
     "discord.js": "^11.4.2",
     "discord.js-commando": "^0.10.0",
-    "trello": "^0.9.0",
+    "roblox-js": "^4.0.4",
+    "trello": "^0.9.1",
     "xmlhttprequest": "^1.8.0"
   }
 }

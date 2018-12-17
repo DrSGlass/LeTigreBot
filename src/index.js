@@ -1,6 +1,7 @@
 console.clear();
 
 const Discord = require("discord.js");
+var roblox = require('roblox-js')
 const TrelloModule = require('trello')
 const Config = require("./config/Config.json");
 const sConfig = require("./config/sConfig.json");
@@ -29,27 +30,23 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     }
 })
 
-bot.on('guildMemberAdd', async member => {
-    var dmChannel = await member.createDM()
-    dmChannel.send(`Welcome to Le Tigre Bleu Theatre discord's server, **${member.user.username}**!  Please take your time to verify by heading to <https://verify.eryn.io/>, if you have not already.  After you verify, your roles will be synced with the server and you can begin chatting.\n\nThanks!\n-Le Tigre Executives`)
-})
+roblox.login({username: sConfig.username, password: sConfig.password}).then((success) => {
+
+}).catch(() => {console.log("Failed to login.");});
 
 function getCurrentTime() {
 	var currentTime = new Date()
     return dateFormat(currentTime,"isoDateTime")
 }
 
-bot.on('message',(message) => {
+bot.on('message',async (message) => {
     if (message.author.bot) return
 
     var args = message.content.trim().split(" ");
     var command = args.shift().toLowerCase();
 
-    if (command == Config.prefix + "cookingwithchris") {
-        while (true) {
-            message.channel.send("<@212433496046698496> when is Cooking with Chris 3 coming out")
-        }
-    }
+    var speakerId = await roblox.getIdFromUsername(message.member.nickname)
+    var speakerRank = await roblox.getRankInGroup(Config.groupId,speakerId)
 
     if (command == Config.prefix + "ping") {
         message.reply(`Pong! ${bot.ping}ms`)
@@ -98,8 +95,50 @@ bot.on('message',(message) => {
 
     }
 
-    if (command === Config.prefix + "gp") {
-        let args = command.split(" ").shift
-        
+    if (command === Config.prefix + "rank") {
+        if (speakerRank < 248) {message.channel.send("You do not have permission to rank users.").then(m => {m.delete(5000); message.delete(5000)}); return}
+        if (message.channel.id != '524308609329397801') {message.channel.send("Please use the rank command in <#524308609329397801>.").then(m => {m.delete(5000); message.delete(5000)}); return}
+    	var username = args.shift()
+    	if (username){
+            var m = await message.channel.send(`Checking Roblox for ${username}`)
+            message.delete(20000)
+            m.delete(20000)
+    		roblox.getIdFromUsername(username)
+			.then(function(id){
+				roblox.getRankInGroup(Config.groupId, id)
+				.then(function(rank){
+					if(Config.maximumRank <= rank){
+						m.edit(`${id} is rank ${rank} and cannot be ranked.`)
+					} else {
+						m.edit(`${id} is rank ${rank} and can be ranked.`)
+						roblox.setRank(Config.groupId, id,parseInt(args.shift()))
+						.then(function(newRole){
+                            m.edit(`Ranked to ${newRole.Name}`)
+                            var reason = args.join(" ")
+                            if (reason == "" || reason == " ") reason = "No reason provided"
+                            bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
+                            .setTitle("Log")
+                            .setDescription("User rank changed")
+                            .addField("User",username,true)
+                            .addField("New Rank",newRole.Name,true)
+                            .addField("Speaker",message.member.displayName,true)
+                            .addField("Reason",reason,true))
+						}).catch(function(err){
+                            m.edit("Failed to rank.")
+                            console.log(err)
+						});
+					}
+				}).catch(function(err){
+                    console.log(err)
+					m.edit(`Couldn't get ${username} in the group ${Config.groupId}.`)
+				});
+			}).catch(function(err){ 
+                console.log(err)
+				m.edit(`Sorry, but ${username} doesn't exist on ROBLOX.`)
+			});
+    	} else {
+    		message.channel.send("Please enter a username.")
+    	}
+    	return;
     }
 })
