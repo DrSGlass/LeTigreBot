@@ -1,12 +1,13 @@
 console.clear();
 
 const Discord = require("discord.js");
-var roblox = require('roblox-js')
+const roblox = require('roblox-js')
 const TrelloModule = require('trello')
 const Config = require("./config/Config.json");
 const sConfig = require("./config/sConfig.json");
 const fs = require("fs");
 const dateFormat = require('dateformat');
+const XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest
 const Token = sConfig.token;
 
 const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
@@ -16,6 +17,10 @@ bot.login(Token);
 bot.on("ready", () => {
     console.log(bot.user.tag + " logged on successfully.")
 });
+
+var updateRoles = (member,rank,role) => {
+
+}
 
 var reports = {}
 
@@ -148,6 +153,15 @@ bot.on('message',async (message) => {
                             .addField("Speaker",message.member.displayName,true)
                             .addField("Reason",reason,true)
                             .setTimestamp(getCurrentTime()))
+                            var u = message.guild.members.find(subject => subject.displayName.toLowerCase() == username.toLowerCase())
+                            if (u) {
+                                u.user.send(new Discord.RichEmbed()
+                                .setTitle("Le Tigre Bleu Theatre")
+                                .setColor("BLUE")
+                                .setDescription(`Your rank in Le Tigre Bleu Theatre has been changed to **${newRole.Name}**.  The reason provided is **${reason}**.\n\nIf you feel the rank change was unfair and would like to appeal, please bring it up to Le Tigre executives by using the **!request** command in <#506586162153127974>.`)
+                                .setTimestamp(getCurrentTime())
+                                .setFooter("Le Tigre Bleu Theatre"))
+                            }
 						}).catch(function(err){
                             m.edit("Failed to rank.")
                             console.log(err)
