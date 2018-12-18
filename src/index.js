@@ -122,7 +122,8 @@ bot.on('message',async (message) => {
                             .addField("User",username,true)
                             .addField("New Rank",newRole.Name,true)
                             .addField("Speaker",message.member.displayName,true)
-                            .addField("Reason",reason,true))
+                            .addField("Reason",reason,true)
+                            .setTimestamp(getCurrentTime()))
 						}).catch(function(err){
                             m.edit("Failed to rank.")
                             console.log(err)
@@ -149,7 +150,6 @@ bot.on('message',async (message) => {
             message.reply('Please specify a message to shout.')
             return
         }
-        args.shift()
         const shoutMSG = args.join(" ");
 
         roblox.shout(Config.groupId, shoutMSG)
@@ -159,7 +159,8 @@ bot.on('message',async (message) => {
                 bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
                     .setAuthor("Shout Log",message.author.displayAvatarURL)
                     .setDescription(message.member.displayName)
-                    .addField("Message",shoutMSG,true))
+                    .addField("Message",shoutMSG,true)
+                    .setTimestamp(getCurrentTime()))
             })
             .catch(function(error) {
                 console.log(`Shout error: ${error}`)
