@@ -26,7 +26,7 @@ bot.on('guildMemberAdd',async (member) => {
         if (reports[member.id]) {
             var channel = guild.channels.get(reports[member.id])
             setTimeout(function() {
-                channel.send(`<@${member.id}> This is your reporting channel.  Anything you'd like to inform Le Tigre executives please post here.  Pictures and/or video are welcome.  <@&524453329204543488>`)
+                channel.send(`<@${member.id}> This is your private channel.  Only you and the executives can read this.  Anything you'd like to inform Le Tigre executives please post here.  Pictures and/or video are welcome.  <@&524453329204543488>`)
             },2000)
         }
     }
@@ -191,20 +191,22 @@ bot.on('message',async (message) => {
             });
     }
 
-    if (command === Config.prefix + "report") {
+    if (command === Config.prefix + "request") {
         var guild = bot.guilds.get('524452811988140032')
         if (guild.roles.find('name',message.author.id)) return
+        var status = await message.channel.send(`<@${message.author.id}> Please wait...`)
         var channel = await guild.createChannel(message.member.displayName,"text")
         channel.setParent('524453053664067584')
         channel.overwritePermissions(guild.roles.find('name','@everyone'),{"READ_MESSAGES":false})
         var role = await guild.createRole({name:message.author.id,color:"RED"})
         channel.overwritePermissions(role,{"READ_MESSAGES":true})
+        channel.overwritePermissions('524453329204543488',{"READ_MESSAGES":true})
         var invite = await channel.createInvite({
             'unique':true,
             'maxUses':1,
             'maxAge':0,
         })
         reports[message.author.id] = channel.id
-        message.author.send("In order to fill out a Le Tigre Bleu report, please join this server.  You will be given a role which will give you access to a channel between you and our executives.  http://discord.gg/" + invite.code)
+        message.author.send("Please join this server.  You will be given a role which will give you access to a channel between you and our executives.  http://discord.gg/" + invite.code).then(dmMessage => {status.edit("Check your DM!")})
     }
 })
