@@ -17,6 +17,30 @@ bot.on("ready", () => {
     console.log(bot.user.tag + " logged on successfully.")
 });
 
+var reports = {}
+
+bot.on('guildMemberAdd',async (member) => {
+    var guild = bot.guilds.get('524452811988140032')
+    if (member.guild == guild) {
+        await member.addRole(guild.roles.find('name',member.id))
+        if (reports[member.id]) {
+            var channel = guild.channels.get(reports[member.id])
+            setTimeout(function() {
+                channel.send(`<@${member.id}> This is your reporting channel.  Anything you'd like to inform Le Tigre executives please post here.  Pictures and/or video are welcome.  <@&524453329204543488>`)
+            },2000)
+        }
+    }
+})
+
+bot.on('guildMemberRemove',async (member) => {
+    var guild = bot.guilds.get('524452811988140032')
+    if (member.guild == guild) {
+        await guild.roles.find('name',member.id).delete()
+        await guild.channels.get(reports[member.id]).delete()
+        reports[member.id] = undefined
+    }
+})
+
 bot.on("voiceStateUpdate", (oldMem, newMem) => {
     if (newMem.user.bot) return 
     let newChan = newMem.voiceChannel
@@ -45,7 +69,7 @@ bot.on('message',async (message) => {
     var args = message.content.trim().split(" ");
     var command = args.shift().toLowerCase();
 
-    var speakerId = await roblox.getIdFromUsername(message.member.nickname)
+    var speakerId = await roblox.getIdFromUsername(message.member.displayName)
     var speakerRank = await roblox.getRankInGroup(Config.groupId,speakerId)
 
     if (command == Config.prefix + "ping") {
@@ -165,5 +189,22 @@ bot.on('message',async (message) => {
             .catch(function(error) {
                 console.log(`Shout error: ${error}`)
             });
+    }
+
+    if (command === Config.prefix + "report") {
+        var guild = bot.guilds.get('524452811988140032')
+        if (guild.roles.find('name',message.author.id)) return
+        var channel = await guild.createChannel(message.member.displayName,"text")
+        channel.setParent('524453053664067584')
+        channel.overwritePermissions(guild.roles.find('name','@everyone'),{"READ_MESSAGES":false})
+        var role = await guild.createRole({name:message.author.id,color:"RED"})
+        channel.overwritePermissions(role,{"READ_MESSAGES":true})
+        var invite = await channel.createInvite({
+            'unique':true,
+            'maxUses':1,
+            'maxAge':0,
+        })
+        reports[message.author.id] = channel.id
+        message.author.send("In order to fill out a Le Tigre Bleu report, please join this server.  You will be given a role which will give you access to a channel between you and our executives.  http://discord.gg/" + invite.code)
     }
 })
