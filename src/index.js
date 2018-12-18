@@ -193,7 +193,13 @@ bot.on('message',async (message) => {
 
     if (command === Config.prefix + "request") {
         var guild = bot.guilds.get('524452811988140032')
-        if (guild.roles.find('name',message.author.id)) return
+        if (guild.roles.find('name',message.author.id)) {
+            var rip = await message.channel.send("You already have a request channel opened.")
+            rip.delete(5000);
+            message.delete(5000);
+            return
+        }
+        if (guild.members.get(message.author.id) && guild.members.get(message.author.id).roles.find('name','Staff')) {message.delete(); return}
         var status = await message.channel.send(`<@${message.author.id}> Please wait...`)
         var channel = await guild.createChannel(message.member.displayName,"text")
         channel.setParent('524453053664067584')
