@@ -222,7 +222,9 @@ bot.on('message',async (message) => {
             return
         }
         if (guild.members.get(message.author.id) && guild.members.get(message.author.id).roles.get('524453329204543488')) {message.delete(); return}
-        var status = await message.channel.send(`<@${message.author.id}> Please wait...`)
+        message.author.send("Please join the server below. You will be able to make your report there.")
+        let inv = await message.author.send("`Loading invite...`")
+        //var status = await message.author.send("`Loading invite...`")
         var channel = await guild.createChannel(message.member.displayName,"text")
         channel.setParent('524453053664067584')
         channel.overwritePermissions(guild.roles.find('name','@everyone'),{"READ_MESSAGES":false})
@@ -235,6 +237,6 @@ bot.on('message',async (message) => {
             'maxAge':0,
         })
         reports[message.author.id] = channel.id
-        message.author.send("Please join this server.  You will be given a role which will give you access to a channel between you and our executives.  http://discord.gg/" + invite.code).then(dmMessage => {status.edit("Check your DM!")})
+        inv.edit("discord.gg/" + invite.code)
     }
 })
