@@ -23,6 +23,7 @@ var updateRoles = (member,rank,role) => {
 }
 
 var reports = {}
+var blacklist = []
 
 bot.on('guildMemberAdd',async (member) => {
     var guild = bot.guilds.get('524452811988140032')
@@ -41,7 +42,10 @@ bot.on('guildMemberRemove',async (member) => {
     var guild = bot.guilds.get('524452811988140032')
     if (member.guild == guild) {
         await guild.roles.find('name',member.id).delete()
-        await guild.channels.get(reports[member.id]).delete()
+        var channel = guild.channels.get(reports[member.id])
+        await channel.setParent('525108271149875220')
+        await channel.setName('lt-' + channel.name)
+        await channel.send("--Discussion end--")
         reports[member.id] = undefined
     }
 })
@@ -126,7 +130,6 @@ bot.on('message',async (message) => {
 
     if (command === Config.prefix + "rank") {
         if (speakerRank < 245) {message.channel.send("You do not have permission to rank users.").then(m => {m.delete(5000); message.delete(5000)}); return}
-        if (message.channel.id != '524308609329397801') {message.channel.send("Please use the rank command in <#524308609329397801>.").then(m => {m.delete(5000); message.delete(5000)}); return}
     	var username = args.shift()
     	if (username){
             var m = await message.channel.send(`Checking Roblox for ${username}`)
@@ -183,7 +186,6 @@ bot.on('message',async (message) => {
 
     if (command === Config.prefix + "shout") {
         if (speakerRank < 245) {message.channel.send("You do not have permission to shout.").then(m => {m.delete(5000); message.delete(5000)}); return}
-        if (message.channel.id != '524308609329397801') {message.channel.send("Please use the shout command in <#524308609329397801>.").then(m => {m.delete(5000); message.delete(5000)}); return}
         if (!args) {
             message.reply('Please specify a message to shout.')
             return
@@ -207,13 +209,19 @@ bot.on('message',async (message) => {
 
     if (command === Config.prefix + "request") {
         var guild = bot.guilds.get('524452811988140032')
+        if (blacklist.find(e => e == message.author.id)) {
+            var rip = await message.channel.send("You are blacklisted from the Le Tigre Bleu request center.")
+            rip.delete(5000);
+            message.delete(5000);
+            return
+        }
         if (guild.roles.find('name',message.author.id)) {
             var rip = await message.channel.send("You already have a request channel opened.")
             rip.delete(5000);
             message.delete(5000);
             return
         }
-        if (guild.members.get(message.author.id) && guild.members.get(message.author.id).roles.find('name','Staff')) {message.delete(); return}
+        if (guild.members.get(message.author.id) && guild.members.get(message.author.id).roles.get('524453329204543488')) {message.delete(); return}
         var status = await message.channel.send(`<@${message.author.id}> Please wait...`)
         var channel = await guild.createChannel(message.member.displayName,"text")
         channel.setParent('524453053664067584')
