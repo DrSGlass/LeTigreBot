@@ -222,6 +222,7 @@ bot.on('message',async (message) => {
             return
         }
         if (guild.members.get(message.author.id) && guild.members.get(message.author.id).roles.get('524453329204543488')) {message.delete(); return}
+        message.channel.send("Check your DM.").then(notice => {notice.delete(15000); message.delete(15000)})
         message.author.send("Please join the server below. You will be able to make your report there.")
         let inv = await message.author.send("`Loading invite...`")
         //var status = await message.author.send("`Loading invite...`")
