@@ -238,6 +238,6 @@ bot.on('message',async (message) => {
             'maxAge':0,
         })
         reports[message.author.id] = channel.id
-        inv.edit("discord.gg/" + invite.code)
+        inv.edit("https://discord.gg/" + invite.code)
     }
 })
