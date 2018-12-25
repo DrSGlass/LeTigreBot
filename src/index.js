@@ -12,7 +12,6 @@ const Token = sConfig.token;
 
 const Trello = new TrelloModule(sConfig.trelloApplicationKey,sConfig.trelloUserToken)
 const bot = new Discord.Client();
-bot.login(Token);
 
 bot.on("ready", () => {
     console.log(bot.user.tag + " logged on successfully.")
@@ -63,7 +62,11 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     }
 })
 
-roblox.login({username: sConfig.username, password: sConfig.password}).then((success) => {
+function login() {
+    return roblox.login(sConfig.username, sConfig.password);
+}
+
+login().then((success) => {
 
 }).catch(() => {console.log("Failed to login.");});
 
@@ -241,3 +244,6 @@ bot.on('message',async (message) => {
         inv.edit("https://discord.gg/" + invite.code)
     }
 })
+
+setInterval(login, 86400000)
+bot.login(Token);
