@@ -62,11 +62,7 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     }
 })
 
-function login() {
-    return roblox.login(sConfig.username, sConfig.password);
-}
-
-login().then((success) => {
+roblox.login(sConfig.username,sConfig.password).then((success) => {
 
 }).catch(() => {console.log("Failed to login.");});
 
@@ -245,5 +241,5 @@ bot.on('message',async (message) => {
     }
 })
 
-setInterval(login, 86400000)
+setInterval(() => {roblox.login(sConfig.username,sConfig.password).catch(console.error)}, 86400000)
 bot.login(Token);
