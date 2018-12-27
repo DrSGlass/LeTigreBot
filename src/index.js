@@ -1,7 +1,7 @@
 console.clear();
 
 const Discord = require("discord.js");
-const roblox = require('roblox-js')
+const roblox = require('noblox.js')
 const TrelloModule = require('trello')
 const Config = require("./config/Config.json");
 const sConfig = require("./config/sConfig.json");
@@ -62,7 +62,7 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
     }
 })
 
-roblox.login(sConfig.username,sConfig.password).then((success) => {
+roblox.cookieLogin(sConfig.cookie).then((success) => {
 
 }).catch(() => {console.log("Failed to login.");});
 
@@ -241,5 +241,4 @@ bot.on('message',async (message) => {
     }
 })
 
-setInterval(() => {roblox.login(sConfig.username,sConfig.password).catch(console.error)}, 86400000)
 bot.login(Token);
