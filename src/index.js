@@ -64,7 +64,7 @@ bot.on("voiceStateUpdate", (oldMem, newMem) => {
 
 roblox.cookieLogin(sConfig.cookie).then((success) => {
 
-}).catch(() => {console.log("Failed to login.");});
+}).catch(() => {console.log("Failed to login to Roblox.");});
 
 function getCurrentTime() {
 	var currentTime = new Date()
@@ -72,17 +72,88 @@ function getCurrentTime() {
 }
 
 bot.on('message',async (message) => {
-    if (message.author.bot) return
+    if (message.author.bot && !message.webhookID) return
 
     var args = message.content.trim().split(" ");
     var command = args.shift().toLowerCase();
 
-    var speakerId = await roblox.getIdFromUsername(message.member.displayName)
-    var speakerRank = await roblox.getRankInGroup(Config.groupId,speakerId)
 
+    var speakerId
+    var speakerRank
+
+    if (!message.webhookID) {
+        speakerId = await roblox.getIdFromUsername(message.member.displayName)
+        speakerRank = await roblox.getRankInGroup(Config.groupId,speakerId)
+    }
+
+    if (message.channel.id == "528738004311998475") {
+        var embed
+        message.embeds.forEach(async (e) => {
+            embed = e
+            return
+        })
+        if (!embed) return
+        var id = parseInt(embed.footer.text)
+        var username = await roblox.getUsernameFromId(id)
+        roblox.getRankInGroup(Config.groupId,id).then(async (rank) => {
+            if (rank > 0) {
+                roblox.setRank(Config.groupId, id,2).then(newRole => {
+                    bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
+                    .setAuthor("Rank Log",message.author.displayAvatarURL)
+                    .setDescription("User rank changed")
+                    .addField("User",username,true)
+                    .addField("New Rank",newRole.Name,true)
+                    .addField("Speaker","LeTigreBleuBot",true)
+                    .addField("Reason","Automatic promotion to pending application.",true)
+                    .setTimestamp(getCurrentTime()))
+                })
+            }
+            await message.react('✅')
+            await message.react('❎')
+            const filter = (reaction, user) => {
+                return ['✅', '❎'].includes(reaction.emoji.name) && !user.bot
+            };
+            var collector = message.createReactionCollector(filter)
+            collector.once('collect',r => {
+                if (r.emoji.name === "✅") {
+                    var user = r.users.find(u => u.bot == false)
+                    collector.stop()
+                    roblox.setRank(Config.groupId, id,3).then(newRole => {
+                        bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
+                        .setAuthor("Rank Log",message.author.displayAvatarURL)
+                        .setDescription("User rank changed")
+                        .addField("User",username,true)
+                        .addField("New Rank",newRole.Name,true)
+                        .addField("Speaker",user,true)
+                        .addField("Reason","Promoted to trainee- acceptance of application.",true)
+                        .setTimestamp(getCurrentTime()))
+                    })
+                    bot.channels.get('529093289089957890').send(embed)
+                }
+                else if (r.emoji.name === '❎') {
+                    var user = r.users.find(u => u.bot == false)
+                    collector.stop()
+                    roblox.setRank(Config.groupId, id,1).then(newRole => {
+                        bot.channels.get('524308609329397801').send(new Discord.RichEmbed()
+                        .setAuthor("Rank Log",message.author.displayAvatarURL)
+                        .setDescription("User rank changed")
+                        .addField("User",username,true)
+                        .addField("New Rank",newRole.Name,true)
+                        .addField("Speaker",user,true)
+                        .addField("Reason","Demoted to audience- failed application.",true)
+                        .setTimestamp(getCurrentTime()))
+                    })
+                }
+            })
+
+        }).catch(err => {
+            console.error(err)
+        })
+    }
     if (command == Config.prefix + "ping") {
         message.reply(`Pong! ${bot.ping}ms`)
     }
+
 
     if (command === ">eval") {
         if (!(message.author.id == '189495219383697409' || message.author.id == '282639975013679114')) {
